@@ -166,7 +166,5 @@ id pool image   snap  device
    2021-04-27 14:32:44.932639 osd.3 [ERR] 1.c shard 2 soid 1:3072a5b7:::rbd_data.13a46b8b4567.0000000000000101:4 : candidate had a missing info key
    2021-04-27 14:32:44.932641 osd.3 [ERR] 1.c soid 1:3072a5b7:::rbd_data.13a46b8b4567.0000000000000101:4 : failed to pick suitable object info
    2021-04-27 14:32:44.932676 osd.3 [ERR] 1.c repair 3 errors, 0 fixed
-   
-   
    ```
 
