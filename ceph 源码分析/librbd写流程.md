@@ -7,7 +7,6 @@ Image::aio_write2
     -->ImageRequestWQ<I>::aio_write
       \-->
       \
-        
 ```
 
 
