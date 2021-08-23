@@ -20,7 +20,7 @@ Image::aio_write2
 
 类ImageWriteRequest继承自AbstractImageWriteRequest
 
-librbd将请求发送给librados处理。`-+- 34234
+librbd将请求发送给librados处理。
 
 
 

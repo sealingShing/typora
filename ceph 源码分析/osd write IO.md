@@ -25,3 +25,23 @@
 
 ![image-20210726154216610](C:\Users\13729\AppData\Roaming\Typora\typora-user-images\image-20210726154216610.png)
 
+
+
+op_w_latency： 写操作的延迟（包括排队时间） = 0.002950175
+
+op_w_process_latency： 写操作的延迟（不包括排队时间）= 0.002043055
+
+op_w_prepare_latency：写操作的延迟（不包括排队时间和等待完成）= 0.000387169
+
+queue_latency：排队时间 
+
+​                        = op_w_latency - op_w_process_latency = 0.002950175 - 0.002043055 
+
+​                        = 0.00090712
+
+wait_latency：等待写操作完成时间
+
+​                       = op_w_process_latency - op_w_prepare_latency = 0.002043055 - 0.000387169 
+
+​                       = 0.001655886
+
