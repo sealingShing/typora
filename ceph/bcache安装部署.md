@@ -9,6 +9,7 @@ yum install -y libblkid-devel
 #下载源码
 [root@source1 ~]# git clone https://github.com/g2p/bcache-tools.git
 #编译安装
+[root@source1 ~]# cd bcache-tools
 [root@source1 bcache-tools]# make && make install
 cc -O2 -Wall -g `pkg-config --cflags uuid blkid`   -c -o bcache.o bcache.c
 bcache.c:125:9: 警告：‘crc_table’是静态的，但却在非静态的内联函数‘crc64’中被使用
@@ -51,7 +52,7 @@ UUID:			cb31c516-9a68-4afc-a4e9-3e6d82696684
 Set UUID:		b17c14f8-0f7f-4eb8-8444-7017d473f859
 version:		1
 block_size:		1
-data_offset:		16
+data_offset:	16
 ```
 
 ### 创建前端缓存磁盘（SSD）
@@ -63,10 +64,10 @@ Set UUID:		7a47558e-4558-4793-b302-214654431686
 version:		0
 nbuckets:		8089
 block_size:		1
-bucket_size:		1024
+bucket_size:	1024
 nr_in_set:		1
-nr_this_dev:		0
-first_bucket:		1
+nr_this_dev:	0
+first_bucket:	1
 ```
 
 ### 建立映射关系
