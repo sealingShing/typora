@@ -19,7 +19,7 @@ Linux source 4.19.90-9.ky10.aarch64 #1 SMP Sun Apr 26 11:05:59 CST 2020 aarch64 
 
 ```shell
 
-yum install git gcc-c++ cmake  gperftools-devel  jemalloc-devel python-sphinx systemd-devel fuse-devel xfsprogs-devel libaio-devel snappy-devel lz4-devel keyutils-libs-devel curl-devel nss-devel openssl-devel expat-devel  lttng-ust-devel libbabeltrace-devel python2-prettytable python3-prettytable python2-Cython python3-Cython gperf
+yum install git gcc-c++ cmake  gperftools-devel  jemalloc-devel python-sphinx systemd-devel fuse-devel xfsprogs-devel libaio-devel snappy-devel lz4-devel keyutils-libs-devel curl-devel nss-devel openssl-devel expat-devel  lttng-ust-devel libbabeltrace-devel python2-prettytable python3-prettytable python2-Cython python3-Cython gperf CUnit-devel python3-devel
 
 ```
 
@@ -44,7 +44,53 @@ cd /data/ceph/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ceph -DWITH_RDMA=OFF -DWITH_OPENLDAP=OFF -DWITH_LEVELDB=OFF -DMGR_PYTHON_VERSION=2 -DWITH_PYTHON2=ON -DWITH_RADOSGW=OFF -DBOOST_J=4 ..
+
 ```
+
+```shell
+#编译开启DPDK和SPDK
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ceph -DWITH_RDMA=OFF -DWITH_OPENLDAP=OFF -DWITH_LEVELDB=OFF -DMGR_PYTHON_VERSION=2 -DWITH_PYTHON2=ON -DWITH_RADOSGW=OFF -DBOOST_J=4 -DWITH_DPDK=ON -DWITH_SPDK=ON ..
+
+#编译遇到的问题1
+  Could NOT find CUnit (missing: CUNIT_LIBRARY CUNIT_INCLUDE_DIR)
+  #解决
+    yum install CUnit-devel
+
+#编译遇到的问题2 
+  Could NOT find dpdk (missing: DPDK_INCLUDE_DIR check_LIBRARIES)
+  #解决
+    无需关注，后续编译会安装
+#编译遇到的问题3 
+  /data/ceph/src/msg/async/dpdk/TCP.h:36:10: 致命错误：cryptopp/md5.h：没有那个文件或目录
+  #解决 
+    cd ceph/src
+    git clone https://github.com/weidai11/cryptopp.git
+    
+#编译遇到的问题4
+[root@source build]# cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ceph -DWITH_RDMA=OFF -DWITH_OPENLDAP=OFF -DWITH_LEVELDB=OFF -DMGR_PYTHON_VERSION=2 -DWITH_PYTHON2=ON -DWITH_RADOSGW=OFF -DBOOST_J=4 ..
+-- NSS_LIBRARIES: /usr/lib64/libssl3.so;/usr/lib64/libsmime3.so;/usr/lib64/libnss3.so;/usr/lib64/libnssutil3.so
+-- NSS_INCLUDE_DIRS: /usr/include/nss3
+-- Found PythonLibs: /usr/lib64/libpython2.7.so (found suitable version "2.7.16", minimum required is "2") 
+-- BUILDING Boost Libraries at j 4
+-- boost will be downloaded...
+-- We are using libstdc++.
+--  we do not have a modern/working yasm
+-- Found PythonLibs: /usr/lib64/libpython2.7.so (found suitable exact version "2.7.16") 
+-- Found Python3Libs: /usr/lib64/libpython3.7m.so (found suitable exact version "3.7.4") 
+--  Using EventEpoll for events.
+-- Found cython3
+-- Found cython
+-- Found PythonInterp: /usr/bin/python2 (found version "2.7.16") 
+-- exclude following files under src: *.js;*.css;civetweb;erasure-code/jerasure/jerasure;erasure-code/jerasure/gf-complete;rocksdb;googletest;spdk;xxHash;isa-l;lua;zstd;crypto/isa-l/isa-l_crypto;blkin;rapidjson
+CMake Error: The following variables are used in this project, but they are set to NOTFOUND.
+Please set them or make sure they are set and tested correctly in the CMake files:
+DPDK_rte_pmd_vmxnet3_uio_LIBRARY
+    linked by target "common_async_dpdk" in directory /data/ceph/src
+
+
+```
+
+
 
 编译补充: 手动下载boost_1_67_0.tar.bz2到
 build/boost/src

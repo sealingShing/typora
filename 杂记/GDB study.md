@@ -12,3 +12,11 @@
 
 
 
+```shell
+#gdb调试子进程
+[root@source1 ~]# gdb --args ceph-osd -i 0
+(gdb) set follow-fork-mode child  #调试程序子进程
+(gdb) br /data/ceph/src/osd/OpQueueItem.cc:24 #设置断点
+(gdb) bt  #打印当前的函数调用栈
+```
+
