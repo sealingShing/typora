@@ -59,7 +59,7 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr/local/ceph -DWITH_RDMA=OFF -DWITH_OPENLDAP=OFF
 #编译遇到的问题2 
   Could NOT find dpdk (missing: DPDK_INCLUDE_DIR check_LIBRARIES)
   #解决
-    无需关注，后续编译会安装
+    编译安装dpdk
 #编译遇到的问题3 
   /data/ceph/src/msg/async/dpdk/TCP.h:36:10: 致命错误：cryptopp/md5.h：没有那个文件或目录
   #解决 
@@ -87,6 +87,14 @@ Please set them or make sure they are set and tested correctly in the CMake file
 DPDK_rte_pmd_vmxnet3_uio_LIBRARY
     linked by target "common_async_dpdk" in directory /data/ceph/src
 
+#问题解决
+  vim /data/ceph/build/src/CMakeFiles/ceph-common.dir/link.txt
+  加上-lcryptopp
+  + -lblkid -lssl3 -lsmime3 -lnss3 -lnssutil3 -lplds4 -lplc4 -lnspr4 -lssl -lcrypto -lcryptopp -lpthread -ldl -lz
+  
+#问题5
+/data/ceph/src/msg/async/dpdk/dpdk_rte.h:38:2: 警告：#warning "CONFIG_RTE_MBUF_REFCNT_ATOMIC should be disabled in DPDK's " "config/common_linuxapp" [-Wcpp]
+ #warning "CONFIG_RTE_MBUF_REFCNT_ATOMIC should be disabled in DPDK's " \
 
 ```
 

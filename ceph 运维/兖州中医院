@@ -1,0 +1,44 @@
+# 兖州中医院ceph问题汇总
+
+下面这条命令开启ceph-osd的debug模式。
+
+```shell 
+ceph-osd -f --cluster ceph -i 105 --setuser root --setgroup root --debug-osd=10 --debug-filestore=10 --log-to-stderr=1
+```
+
+## 问题一
+
+```shell
+-2> 2021-10-09 08:00:43.956969 2b731c106ec0 10 filestore(/var/lib/ceph/osd/ceph-107) error opening file /var/lib/ceph/osd/ceph-107/current/meta/DIR_4/DIR_5/osdmap.137338__0_DF52D454__none with flags=2: (2) No such file or directory
+-1> 2021-10-09 08:00:43.956980 2b731c106ec0 10 filestore(/var/lib/ceph/osd/ceph-107) FileStore::read(meta/#-1:2a2b4afb:::osdmap.137338:0#) open error: (2) No such file or directory
+ 0> 2021-10-09 08:00:43.958659 2b731c106ec0 -1 osd/OSD.h: In function 'OSDMapRef OSDService::get_map(epoch_t)' thread 2b731c106ec0 time 2021-10-09 08:00:43.956993
+ osd/OSD.h: 894: FAILED assert(ret)
+```
+### 解决方法
+
+在其他osd的meta目录中找相应的osdmap文件，cp到相应目录中，重新启动osd即可。
+
+
+
+## 问题二
+
+```shell
+-8> 2021-10-09 08:11:18.838637 2b90061e8ec0 10 filestore(/var/lib/ceph/osd/ceph-106) open_journal at /var/lib/ceph/osd/ceph-106/journal
+-7> 2021-10-09 08:11:18.838669 2b90061e8ec0  0 filestore(/var/lib/ceph/osd/ceph-106) mount: enabling WRITEAHEAD journal mode: checkpoint is not enabled
+-6> 2021-10-09 08:11:18.838673 2b90061e8ec0 10 filestore(/var/lib/ceph/osd/ceph-106) list_collections
+-5> 2021-10-09 08:11:18.839767 2b90061e8ec0  2 journal open /var/lib/ceph/osd/ceph-106/journal fsid f13f61d9-ab7e-4787-a2c3-bc7f77a9d779 fs_op_seq 526762224
+-4> 2021-10-09 08:11:18.839780 2b90061e8ec0 -1 journal FileJournal::_open: disabling aio for non-block journal.  Use journal_force_aio to force use of aio anyway
+-3> 2021-10-09 08:11:18.839782 2b90061e8ec0  1 journal _open /var/lib/ceph/osd/ceph-106/journal fd 18: 5368709120 bytes, block size 4096 bytes, directio = 1, aio = 0
+-2> 2021-10-09 08:11:18.880980 2b90061e8ec0  2 journal read_entry 838467584 : seq 526762233 4060 bytes
+-1> 2021-10-09 08:11:18.881024 2b90061e8ec0 -1 journal Unable to read past sequence 526762225 but header indicates the journal has committed up through 526762233, journal is corrupt
+ 0> 2021-10-09 08:11:18.883444 2b90061e8ec0 -1 os/filestore/FileJournal.cc: In function 'bool FileJournal::read_entry(ceph::bufferlist&, uint64_t&, bool*)' thread 2b90061e8ec0 time 2021-10-09 08:11:18.881030
+ os/filestore/FileJournal.cc: 2036: FAILED assert(0)
+```
+### 解决方法
+
+```shell
+在ceph.conf文件中加上
+[osd]
+journal_ignore_corruption = true
+```
+
