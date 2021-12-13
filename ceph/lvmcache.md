@@ -38,5 +38,17 @@
 fdisk /dev/sda
 ```
 
+删除lv
+
+```shell
+for i in `lvscan  | grep "vg/data_" | awk -F"'" '{print $2}'`;do yes y | lvremove $i;done
+```
+
+删除pv
+
+```shell
+for i in `pvscan | grep -Ev VG | awk '{print $2}'`;do pvremove $i;done
+```
+
 
 
